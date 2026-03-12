@@ -12,11 +12,10 @@ struct CharacterDTO: Decodable {
     let species: String
     
     func toEntity() -> CharacterEntity {
-        CharacterEntity(
+        return CharacterEntity(
             id: self.id,
             name: self.name,
             status: self.status,
-            species: self.species
-        )
+            species: self.species)
     }
 }
