@@ -6,31 +6,20 @@
 //
 import Foundation
 
-struct CharacterDataSourceRemoteRepository: CharacterRemoteRepository {
-    private let baseURL: String
+struct CharacterDataSourceRemoteRepository: CharacterRepository {
+    private let apiClient: APIClient
     
-    init(baseURL: String) {
-        self.baseURL = baseURL
+    init(apiClient: APIClient) {
+        self.apiClient = apiClient
     }
     
     func getCharacters() async throws -> [CharacterEntity] {
-        let endpoint = GetCharacterEndpoint()
-        
-        guard let url = URL(string: baseURL + endpoint.path) else {
-            throw RepositoryErrorType.invalidURL
-        }
-        
-        let (data, response) = try await URLSession.shared.data(from: url)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw RepositoryErrorType.invalidResponse
-        }
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw RepositoryErrorType.httpStatusCode(httpResponse.statusCode)
-        }
-        
-        let dto = try JSONDecoder().decode(CharacterListDTO.self, from: data)
-        return dto.results.map { $0.toEntity() }
+        let responseDTO: CharacterListDTO = try await self.apiClient.get("/character", as: CharacterListDTO.self)
+        return responseDTO.toEntity()
+    }
+    
+    func getCharacter(id: Int) async throws -> CharacterEntity {
+        let dto: CharacterDTO = try await self.apiClient.get("/character/\(id)", as: CharacterDTO.self)
+        return dto.toEntity()
     }
 }

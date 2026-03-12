@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ApiClient {
+final class APIClient {
     
     private let baseURL: String
     private let session: URLSession
