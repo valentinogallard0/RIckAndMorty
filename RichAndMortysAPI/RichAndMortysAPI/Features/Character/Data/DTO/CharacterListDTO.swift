@@ -8,6 +8,10 @@
 struct CharacterListDTO: Decodable {
     let results: [CharacterDTO]
     
+    enum CodingKeys: String, CodingKey {
+        case results
+    }
+    
     func toEntity() -> [CharacterEntity] {
         return self.results.map { $0.toEntity() }
     }

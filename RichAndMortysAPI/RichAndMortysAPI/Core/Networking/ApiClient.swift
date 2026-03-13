@@ -24,14 +24,14 @@ final class APIClient {
     }
     
     func get<T: Decodable> (_ path: String, as type: T.Type) async throws -> T {
-        guard let url: URL = URL(string: self.baseURL + path) else { throw URLError(.badURL) }
+        guard let url: URL = URL(string: self.baseURL + path) else { throw RepositoryErrorType.invalidURL }
         
         let (data, response): (Data, URLResponse) = try await self.session.data(from: url)
         
-        guard let httpResponse: HTTPURLResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse)}
+        guard let httpResponse: HTTPURLResponse = response as? HTTPURLResponse else { throw RepositoryErrorType.invalidResponse }
         
         guard 200...299 ~= httpResponse.statusCode else {
-            throw URLError(.badServerResponse)
+            throw RepositoryErrorType.httpStatusCode(httpResponse.statusCode)
         }
         
         return try self.decoder.decode(T.self, from: data)

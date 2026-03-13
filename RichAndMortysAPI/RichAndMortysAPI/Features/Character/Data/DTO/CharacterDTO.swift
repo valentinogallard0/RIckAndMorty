@@ -11,6 +11,13 @@ struct CharacterDTO: Decodable {
     let status: String
     let species: String
     
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case status
+        case species
+    }
+    
     func toEntity() -> CharacterEntity {
         return CharacterEntity(
             id: self.id,

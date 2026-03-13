@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct CharacterDataSourceRemoteRepository: CharacterRepository {
+struct CharacterDataSourceRemoteRepository: CharacterRemoteRepository {
     private let apiClient: APIClient
     
     init(apiClient: APIClient) {
