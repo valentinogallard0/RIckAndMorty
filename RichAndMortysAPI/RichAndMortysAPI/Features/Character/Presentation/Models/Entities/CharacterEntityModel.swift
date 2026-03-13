@@ -5,11 +5,20 @@
 //  Created by Valentino De Paola Gallardo on 13/03/26.
 //
 
-struct CharacterEntityModel {
+struct CharacterEntityModel: Identifiable {
     let id: Int
     let name: String
     let status: String
     let species: String
+    
+    var initials: String {
+        let letters: [Character] = self.name
+            .split(separator: " ")
+            .prefix(2)
+            .compactMap(\.first)
+        
+        return letters.isEmpty ? "?" : String(letters).uppercased()
+    }
 }
 
 extension CharacterEntityModel {

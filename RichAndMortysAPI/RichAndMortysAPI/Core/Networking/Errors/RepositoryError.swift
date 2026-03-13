@@ -5,20 +5,25 @@
 //  Created by Valentino De Paola Gallardo on 08/03/26.
 //
 
+import Foundation
 
-enum RepositoryErrorType: Error {
+enum RepositoryErrorType: LocalizedError {
     case invalidURL
     case invalidResponse
     case httpStatusCode(Int)
     
-    var description: String {
+    var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Invalid URL"
+            return "La URL del servicio es invalida."
         case .invalidResponse:
-            return "Invalid response"
+            return "La respuesta del servidor no es valida."
         case .httpStatusCode(let code):
-            return "HTTP error with status code: \(code)"
+            return "Error HTTP con codigo de estado: \(code)."
         }
+    }
+    
+    var description: String {
+        self.errorDescription ?? "Error de repositorio."
     }
 }
