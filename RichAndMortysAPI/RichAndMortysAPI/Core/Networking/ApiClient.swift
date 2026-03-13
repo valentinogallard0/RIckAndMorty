@@ -14,17 +14,20 @@ final class APIClient {
     private let decoder: JSONDecoder
     
     init(
-        baseURL: String = "https://rickandmortyapi.com/api",
+        baseURL: String = AppConfiguration.apiBaseURL,
         session: URLSession = .shared,
         decoder: JSONDecoder = JSONDecoder()
     ) {
-        self.baseURL = baseURL
+        let trimmedBaseURL: String = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.baseURL = trimmedBaseURL.hasSuffix("/") ? String(trimmedBaseURL.dropLast()) : trimmedBaseURL
         self.session = session
         self.decoder = decoder
     }
     
     func get<T: Decodable> (_ path: String, as type: T.Type) async throws -> T {
-        guard let url: URL = URL(string: self.baseURL + path) else { throw RepositoryErrorType.invalidURL }
+        let normalizedPath: String = path.hasPrefix("/") ? path : "/\(path)"
+        
+        guard let url: URL = URL(string: self.baseURL + normalizedPath) else { throw RepositoryErrorType.invalidURL }
         
         let (data, response): (Data, URLResponse) = try await self.session.data(from: url)
         
