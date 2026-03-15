@@ -16,6 +16,7 @@ struct AnimatedBackgroundModifier: ViewModifier {
                 .ignoresSafeArea()
             content
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

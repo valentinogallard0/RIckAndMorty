@@ -8,14 +8,20 @@ import Foundation
 
 enum AppConfiguration {
     private static let apiBaseURLKey: String = "API_BASE_URL"
+    private static let fallbackAPIBaseURL: String = "https://rickandmortyapi.com/api"
     
     static var apiBaseURL: String {
         guard let apiBaseURL: String = Bundle.main.object(forInfoDictionaryKey: self.apiBaseURLKey) as? String else {
-            preconditionFailure("Missing \(self.apiBaseURLKey) in the app configuration.")
+            assertionFailure("Missing \(self.apiBaseURLKey) in the app configuration. Falling back to the default API host.")
+            return self.fallbackAPIBaseURL
         }
         
         let trimmedValue: String = apiBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        precondition(!trimmedValue.isEmpty, "\(self.apiBaseURLKey) cannot be empty.")
+        
+        guard !trimmedValue.isEmpty else {
+            assertionFailure("\(self.apiBaseURLKey) cannot be empty. Falling back to the default API host.")
+            return self.fallbackAPIBaseURL
+        }
         
         return trimmedValue
     }

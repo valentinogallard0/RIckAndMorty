@@ -11,8 +11,8 @@ import Combine
 
 @MainActor
 final class CharactersViewModel: ObservableObject {
-    @Published private var characters: [CharacterEntityModel] = []
-    @Published private var isLoading: Bool = false
+    @Published private(set) var characters: [CharacterEntityModel] = []
+    @Published private(set) var isLoading: Bool = false
     @Published var errorMessage: String?
     
     private let getCharactersUseCase: GetCharactersUseCase
@@ -21,20 +21,22 @@ final class CharactersViewModel: ObservableObject {
         self.getCharactersUseCase = getCharactersUseCase
     }
     
-    func loadCharacters() {
-        Task {
-            do {
-                self.isLoading = true
-                self.errorMessage = nil
-                
-                let entities: [CharacterEntity] = try await self.getCharactersUseCase.execute()
-                self.characters = entities.map { CharacterEntityModel.toObject(fromData: $0) }
-                
-                self.isLoading = false
-            } catch {
-                self.isLoading = false
-                self.errorMessage = error.localizedDescription
-            }
+    func loadCharactersIfNeeded() async {
+        guard characters.isEmpty, !isLoading else { return }
+        await loadCharacters()
+    }
+    
+    func loadCharacters() async {
+        isLoading = true
+        errorMessage = nil
+        
+        defer { isLoading = false }
+        
+        do {
+            let entities = try await getCharactersUseCase.execute()
+            characters = entities.map{ CharacterEntityModel.toObject(fromData: $0)}
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 }
