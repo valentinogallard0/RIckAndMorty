@@ -8,6 +8,7 @@ import SwiftUI
 
 struct CharactersView: View {
     @StateObject private var viewModel: CharactersViewModel
+    @State var searchText: String = ""
     
     init(viewModel: CharactersViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -16,13 +17,6 @@ struct CharactersView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                
-                Image("RickAndMorty")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 180)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 12)
                 
                 if viewModel.isLoading {
                     ProgressView()
@@ -35,6 +29,25 @@ struct CharactersView: View {
                         .padding(.horizontal, 24)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
+                    HStack {
+                        Text("Characters")
+                            .font(.title)
+                            .fontWeight(.black)
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading)
+                        
+                        Spacer()
+                        
+                        Text("\(viewModel.characters.count)")
+                            .foregroundStyle(Color.green)
+                            .fontWeight(.black)
+                            .padding(.trailing)
+                    }
+                    
+                    SearchBar(text: $searchText)
+                        .padding(.horizontal, 16)
+                    
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack(spacing: 12) {
                             ForEach(viewModel.characters, id: \.id) { character in
@@ -52,36 +65,24 @@ struct CharactersView: View {
                                     } //: HStack
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 10)
-                                    .background {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .stroke(
-                                                LinearGradient(
-                                                    colors: [
-                                                        Color.white.opacity(0.2),
-                                                        Color.white.opacity(0.2)
-                                                    ],
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                ),
-                                                lineWidth: 1
-                                            )
-                                    }
                                 }
                                 .buttonStyle(.plain)
+                                Divider()
+                                    .background(.gray.opacity(0.2))
                             }
                         }
                         .padding(.horizontal, 10)
                         .padding(.bottom, 16)
-                    }
+                    } //ScrollView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            }
+            }// VStack
             .animatedBackground()
             .toolbarBackground(.hidden, for: .navigationBar)
             .task {
                 await viewModel.loadCharactersIfNeeded()
             }
-        }
+        } // NavigationStack
     }
 }
 
