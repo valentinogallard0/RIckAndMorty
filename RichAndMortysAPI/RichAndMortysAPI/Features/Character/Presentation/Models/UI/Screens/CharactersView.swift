@@ -58,3 +58,7 @@ struct CharactersView: View {
         }
     }
 }
+
+#Preview {
+    AppContainer().makeCharacterView()
+}
