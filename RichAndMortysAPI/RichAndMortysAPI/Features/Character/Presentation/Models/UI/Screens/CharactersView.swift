@@ -14,47 +14,73 @@ struct CharactersView: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
-            
-            Image("RickAndMorty")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 180)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 12)
-            
-            if viewModel.isLoading {
-                ProgressView()
-                    .tint(.white)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                List(viewModel.characters, id: \.id) { character in
-                    HStack {
-                        CharacterImageView(imageURL: character.image)
-                        Text(character.name)
-                            .foregroundStyle(.white)
-                            .fontWeight(.black)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                        Spacer()
-                        CharacterStatusView(characterStatus: character.status, characterSpecie: character.species)
+        NavigationStack {
+            VStack(spacing: 16) {
+                
+                Image("RickAndMorty")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 180)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 12)
+                
+                if viewModel.isLoading {
+                    ProgressView()
+                        .tint(.white)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.characters, id: \.id) { character in
+                                NavigationLink {
+                                    CharacterDetailView()
+                                } label: {
+                                    HStack {
+                                        CharacterImageView(imageURL: character.image)
+                                        Text(character.name)
+                                            .foregroundStyle(.white)
+                                            .fontWeight(.black)
+                                            .frame(maxWidth: .infinity, alignment: .center)
+                                        Spacer()
+                                        CharacterStatusView(characterStatus: character.status, characterSpecie: character.species)
+                                    } //: HStack
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 10)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .stroke(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.white.opacity(0.2),
+                                                        Color.white.opacity(0.2)
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 1
+                                            )
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 16)
                     }
-                    .listRowBackground(Color.clear)
-
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(Color.clear)
             }
-        }
-        .animatedBackground()
-        .task {
-            await viewModel.loadCharactersIfNeeded()
+            .animatedBackground()
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .task {
+                await viewModel.loadCharactersIfNeeded()
+            }
         }
     }
 }
