@@ -6,7 +6,7 @@
 //
 
 extension AppContainer {
-    func makeCharacterView() -> CharactersView {
+    func makeCharactersView() -> CharactersView {
         let repository = CharacterDataSourceRemoteRepository(apiClient: apiClient)
         let useCase = GetCharactersUseCase(repository: repository)
         let viewModel = CharactersViewModel(getCharactersUseCase: useCase)

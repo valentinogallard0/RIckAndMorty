@@ -49,6 +49,7 @@ struct CharactersView: View {
                     }
                     .padding(.horizontal)
                     
+                    //TODO: Hacer que funcione el searchbar
                     SearchBar(text: $searchText)
                         .padding(.horizontal, 16)
                     
@@ -105,5 +106,5 @@ struct CharactersView: View {
 }
 
 #Preview {
-    AppContainer().makeCharacterView()
+    AppContainer().makeCharactersView()
 }

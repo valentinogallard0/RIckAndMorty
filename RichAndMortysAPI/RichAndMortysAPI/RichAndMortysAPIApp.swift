@@ -13,7 +13,7 @@ struct RichAndMortysAPIApp: App {
     
     var body: some Scene {
         WindowGroup {
-            container.makeCharacterView()
+            container.makeCharactersView()
         }
     }
 }
