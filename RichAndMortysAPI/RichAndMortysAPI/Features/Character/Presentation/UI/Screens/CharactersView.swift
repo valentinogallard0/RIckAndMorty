@@ -56,16 +56,30 @@ struct CharactersView: View {
                         LazyVStack(spacing: 12) {
                             ForEach(viewModel.characters, id: \.id) { character in
                                 NavigationLink {
-                                    CharacterDetailView()
+                                    CharacterDetailView(character: character)
                                 } label: {
                                     HStack {
-                                        CharacterImageView(imageURL: character.image)
-                                        Text(character.name)
-                                            .foregroundStyle(.white)
-                                            .fontWeight(.black)
-                                            .frame(maxWidth: .infinity, alignment: .center)
+                                        CharacterImageView(
+                                            imageURL: character.image,
+                                            size: 76,
+                                            cornerRadius: 22
+                                        )
+                                        VStack {
+                                            Text(character.name)
+                                                .foregroundStyle(.white)
+                                                .fontWeight(.black)
+                                                .frame(maxWidth: .infinity, alignment: .center)
+                                            Text(character.origin.name)
+                                                .foregroundStyle(.white)
+                                                .font(.caption)
+                                                .frame(maxWidth: .infinity, alignment: .center)
+                                        }
                                         Spacer()
-                                        CharacterStatusView(characterStatus: character.status, characterSpecie: character.species)
+                                        CharacterStatusView(
+                                            characterStatus: character.status,
+                                            characterSpecie: character.species,
+                                            side: .vertical
+                                        )
                                     } //: HStack
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 10)

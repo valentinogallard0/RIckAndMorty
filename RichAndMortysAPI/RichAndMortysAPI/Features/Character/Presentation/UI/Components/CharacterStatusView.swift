@@ -33,42 +33,77 @@ struct CharacterStatusView: View {
         }
     }
     
+    enum Side: String {
+        case horizontal
+        case vertical
+    }
+    
     var characterStatus: String
     var characterSpecie: String
+    var side: Side
     private var status: CharacterStatus {
         CharacterStatus(status: characterStatus)
     }
     
     var body: some View {
-        VStack(alignment: .trailing) {
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(status.color)
-                    .frame(width: 8, height: 8)
+        switch side {
+        case .vertical:
+            VStack(alignment: .trailing) {
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(status.color)
+                        .frame(width: 8, height: 8)
+                    
+                    Text(status.title)
+                        .font(.footnote)
+                        .foregroundStyle(status.color)
+                }
                 
-                Text(status.title)
+                Text(characterSpecie)
+                    .padding(3)
                     .font(.footnote)
                     .foregroundStyle(status.color)
+                    .fontWeight(.black)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(
+                                LinearGradient(colors: [status.color, status.color], startPoint: .leading, endPoint: .trailing)
+                                    .opacity(0.3)
+                            )
+                    )
+                    .foregroundStyle(status.color)
             }
-            
-            Text(characterSpecie)
-                .padding(3)
-                .font(.footnote)
-                .foregroundStyle(status.color)
-                .fontWeight(.black)
-                .background(
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(
-                            LinearGradient(colors: [status.color, status.color], startPoint: .leading, endPoint: .trailing)
-                                .opacity(0.3)
-                        )
-                )
-                .foregroundStyle(status.color)
+        case .horizontal:
+            HStack {
+                HStack(spacing: 8) {
+                    Circle()
+                        .fill(status.color)
+                        .frame(width: 8, height: 8)
+                    
+                    Text(status.title)
+                        .font(.footnote)
+                        .foregroundStyle(status.color)
+                }
+                
+                Text(characterSpecie)
+                    .padding(3)
+                    .font(.footnote)
+                    .foregroundStyle(status.color)
+                    .fontWeight(.black)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(
+                                LinearGradient(colors: [status.color, status.color], startPoint: .leading, endPoint: .trailing)
+                                    .opacity(0.3)
+                            )
+                    )
+                    .foregroundStyle(status.color)
+            }
         }
     }
 }
 
 
 #Preview {
-    CharacterStatusView(characterStatus: "Alive", characterSpecie: "Human")
+    CharacterStatusView(characterStatus: "Alive", characterSpecie: "Human", side: .vertical)
 }

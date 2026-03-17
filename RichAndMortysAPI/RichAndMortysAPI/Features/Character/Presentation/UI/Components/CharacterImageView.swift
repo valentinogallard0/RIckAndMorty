@@ -9,8 +9,8 @@ import Foundation
 
 struct CharacterImageView: View {
     var imageURL: URL
-    var size: CGFloat = 76
-    var cornerRadius: CGFloat = 22
+    var size: CGFloat
+    var cornerRadius: CGFloat
 
     var body: some View {
         AsyncImage(url: imageURL) { phase in
@@ -53,6 +53,8 @@ struct CharacterImageView: View {
 
 #Preview {
     CharacterImageView(
-        imageURL: URL(string: "https://rickandmortyapi.com/api/character/avatar/1.jpeg")!
+        imageURL: URL(string: "https://rickandmortyapi.com/api/character/avatar/1.jpeg")!,
+        size: 76,
+        cornerRadius: 22
     )
 }

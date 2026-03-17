@@ -12,4 +12,5 @@ struct CharacterEntity {
     let status: String
     let species: String
     let image: URL
+    let origin: CharacterOriginEntity
 }
