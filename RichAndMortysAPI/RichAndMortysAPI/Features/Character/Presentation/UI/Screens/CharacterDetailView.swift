@@ -12,6 +12,7 @@ struct CharacterDetailView: View {
     
     var body: some View {
         VStack {
+            // TODO: Agregarle un Stroke a la imagen
             CharacterImageView(
                 imageURL: character.image,
                 size: 140,
@@ -30,6 +31,7 @@ struct CharacterDetailView: View {
                 .foregroundStyle(.green)
                 .fontWeight(.black)
             
+            //TODO: Agregar la info restante del personaje.
             Spacer()
         }
         .animatedBackground()
