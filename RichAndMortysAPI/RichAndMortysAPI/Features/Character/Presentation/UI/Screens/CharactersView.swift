@@ -35,15 +35,19 @@ struct CharactersView: View {
                             .fontWeight(.black)
                             .foregroundStyle(Color.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading)
                         
                         Spacer()
                         
                         Text("\(viewModel.characters.count)")
+                            .padding(3)
+                            .background {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.green.opacity(0.3))
+                            }
                             .foregroundStyle(Color.green)
                             .fontWeight(.black)
-                            .padding(.trailing)
                     }
+                    .padding(.horizontal)
                     
                     SearchBar(text: $searchText)
                         .padding(.horizontal, 16)
