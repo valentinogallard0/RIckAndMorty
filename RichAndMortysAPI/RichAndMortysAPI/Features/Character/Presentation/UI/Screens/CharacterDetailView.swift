@@ -12,7 +12,6 @@ struct CharacterDetailView: View {
     
     var body: some View {
         VStack {
-            // TODO: Agregarle un Stroke a la imagen
             CharacterImageView(
                 imageURL: character.image,
                 size: 140,
@@ -31,7 +30,18 @@ struct CharacterDetailView: View {
                 .foregroundStyle(.green)
                 .fontWeight(.black)
             
-            //TODO: Agregar la info restante del personaje.
+            //TODO: Mapear la informacion restante de los personajes, actualmente hay algunas que aun tenemos hardcodeadas.
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                CharacterInfoComponent(label: "Genero", info: character.gender, side: .twoComponents)
+                CharacterInfoComponent(label: "Especie", info: character.species, side: .twoComponents)
+                CharacterInfoComponent(label: "Origen", info: character.origin.name, side: .twoComponents)
+                CharacterInfoComponent(label: "Ubicacion", info: "Citadel", side: .twoComponents)
+            }
+            .padding(.horizontal, 16)
+
+            CharacterInfoComponent(label: "Episodes", info: "Apariciones totales", side: .threeComponents, extraInfo: "5")
+                .padding(.horizontal, 16)
+            
             Spacer()
         }
         .animatedBackground()

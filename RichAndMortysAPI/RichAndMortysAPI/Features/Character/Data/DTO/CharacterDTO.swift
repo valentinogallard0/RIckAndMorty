@@ -11,6 +11,7 @@ struct CharacterDTO: Decodable {
     let name: String
     let status: String
     let species: String
+    let gender: String
     let image: URL
     let origin: CharacterOriginDTO
     
@@ -19,6 +20,7 @@ struct CharacterDTO: Decodable {
         case name
         case status
         case species
+        case gender
         case image
         case origin
     }
@@ -29,6 +31,7 @@ struct CharacterDTO: Decodable {
             name: self.name,
             status: self.status,
             species: self.species,
+            gender: self.gender,
             image: self.image,
             origin: self.origin.toEntity()
         )

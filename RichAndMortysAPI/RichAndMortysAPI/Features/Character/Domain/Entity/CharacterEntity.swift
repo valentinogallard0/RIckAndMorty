@@ -11,6 +11,7 @@ struct CharacterEntity {
     let name: String
     let status: String
     let species: String
+    let gender: String
     let image: URL
     let origin: CharacterOriginEntity
 }

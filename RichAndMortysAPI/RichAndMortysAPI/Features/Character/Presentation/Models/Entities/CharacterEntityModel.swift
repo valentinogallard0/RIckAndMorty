@@ -11,6 +11,7 @@ struct CharacterEntityModel: Identifiable {
     let name: String
     let status: String
     let species: String
+    let gender: String
     let image: URL
     let origin: CharacterOriginEntityModel
 }
@@ -22,6 +23,7 @@ extension CharacterEntityModel {
             name: entity.name,
             status: entity.status,
             species: entity.species,
+            gender: entity.gender,
             image: entity.image,
             origin: CharacterOriginEntityModel.toObject(fromData: entity.origin)
         )
