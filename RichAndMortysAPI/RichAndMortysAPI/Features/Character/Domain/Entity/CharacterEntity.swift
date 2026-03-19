@@ -14,4 +14,5 @@ struct CharacterEntity {
     let gender: String
     let image: URL
     let origin: CharacterOriginEntity
+    let location: CharacterLocationEntity
 }

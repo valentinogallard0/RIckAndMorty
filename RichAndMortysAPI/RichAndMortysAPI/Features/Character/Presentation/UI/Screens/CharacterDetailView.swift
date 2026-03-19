@@ -35,7 +35,7 @@ struct CharacterDetailView: View {
                 CharacterInfoComponent(label: "Genero", info: character.gender, side: .twoComponents)
                 CharacterInfoComponent(label: "Especie", info: character.species, side: .twoComponents)
                 CharacterInfoComponent(label: "Origen", info: character.origin.name, side: .twoComponents)
-                CharacterInfoComponent(label: "Ubicacion", info: "Citadel", side: .twoComponents)
+                CharacterInfoComponent(label: "Ubicacion", info: character.location.name, side: .twoComponents)
             }
             .padding(.horizontal, 16)
 

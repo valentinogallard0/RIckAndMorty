@@ -14,6 +14,7 @@ struct CharacterDTO: Decodable {
     let gender: String
     let image: URL
     let origin: CharacterOriginDTO
+    let location: CharacterLocationDTO
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -23,6 +24,7 @@ struct CharacterDTO: Decodable {
         case gender
         case image
         case origin
+        case location
     }
     
     func toEntity() -> CharacterEntity {
@@ -33,7 +35,8 @@ struct CharacterDTO: Decodable {
             species: self.species,
             gender: self.gender,
             image: self.image,
-            origin: self.origin.toEntity()
+            origin: self.origin.toEntity(),
+            location: self.location.toEntity()
         )
     }
 }
