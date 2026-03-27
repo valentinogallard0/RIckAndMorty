@@ -12,13 +12,8 @@ struct GetCharactersUseCase {
         self.repository = repository
     }
     
-    func execute() async throws -> [CharacterEntity] {
-        let characters: [CharacterEntity] = try await self.repository.getCharacters()
-        
-        if characters.isEmpty {
-            throw CharacterError.emptyCharacters
-        }
-        
+    func execute(name: String? = nil) async throws -> [CharacterEntity] {
+        let characters: [CharacterEntity] = try await self.repository.getCharacters(name: name)
         return characters
     }
 }

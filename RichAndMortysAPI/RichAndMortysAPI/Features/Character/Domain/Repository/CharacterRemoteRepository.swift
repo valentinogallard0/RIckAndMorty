@@ -6,6 +6,6 @@
 //
 
 protocol CharacterRemoteRepository {
-    func getCharacters() async throws -> [CharacterEntity]
+    func getCharacters(name: String?) async throws -> [CharacterEntity]
     func getCharacter(id: Int) async throws -> CharacterEntity
 }

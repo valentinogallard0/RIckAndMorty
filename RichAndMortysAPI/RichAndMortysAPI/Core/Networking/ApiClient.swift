@@ -24,10 +24,14 @@ final class APIClient {
         self.decoder = decoder
     }
     
-    func get<T: Decodable> (_ path: String, as type: T.Type) async throws -> T {
+    func get<T: Decodable> (_ path: String, queryItems: [URLQueryItem] = [], as type: T.Type) async throws -> T {
         let normalizedPath: String = path.hasPrefix("/") ? path : "/\(path)"
+
+        guard var components = URLComponents(string: self.baseURL) else { throw RepositoryErrorType.invalidURL }
+        components.path += normalizedPath
+        components.queryItems = queryItems.isEmpty ? nil : queryItems
         
-        guard let url: URL = URL(string: self.baseURL + normalizedPath) else { throw RepositoryErrorType.invalidURL }
+        guard let url: URL = components.url else { throw RepositoryErrorType.invalidURL }
         
         let (data, response): (Data, URLResponse) = try await self.session.data(from: url)
         

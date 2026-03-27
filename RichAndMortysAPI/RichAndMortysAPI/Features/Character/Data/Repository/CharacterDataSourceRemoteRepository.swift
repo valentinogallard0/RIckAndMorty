@@ -13,9 +13,35 @@ struct CharacterDataSourceRemoteRepository: CharacterRemoteRepository {
         self.apiClient = apiClient
     }
     
-    func getCharacters() async throws -> [CharacterEntity] {
-        let responseDTO: CharacterListDTO = try await self.apiClient.get("/character", as: CharacterListDTO.self)
-        return responseDTO.toEntity()
+    func getCharacters(name: String?) async throws -> [CharacterEntity] {
+        let trimmedName = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        do {
+            let responseDTO: CharacterListDTO
+            
+            if let trimmedName, !trimmedName.isEmpty {
+                let queryItems = [
+                    URLQueryItem(name: "name", value: trimmedName)
+                ]
+                
+                responseDTO = try await apiClient.get(
+                    "/character",
+                    queryItems: queryItems,
+                    as: CharacterListDTO.self
+                )
+            } else {
+                responseDTO = try await apiClient.get(
+                    "/character",
+                    as: CharacterListDTO.self
+                )
+            }
+            return responseDTO.toEntity()
+        } catch let error as RepositoryErrorType {
+            if case.httpStatusCode(404) = error {
+                return []
+            }
+            throw error
+        }
     }
     
     func getCharacter(id: Int) async throws -> CharacterEntity {

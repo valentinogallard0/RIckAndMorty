@@ -8,7 +8,6 @@ import SwiftUI
 
 struct CharactersView: View {
     @StateObject private var viewModel: CharactersViewModel
-    @State var searchText: String = ""
     
     init(viewModel: CharactersViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -17,92 +16,121 @@ struct CharactersView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
+                headerView
                 
-                if viewModel.isLoading {
-                    ProgressView()
-                        .tint(.white)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 24)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    HStack {
-                        Text("Characters")
-                            .font(.title)
-                            .fontWeight(.black)
-                            .foregroundStyle(Color.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        Spacer()
-                        
-                        Text("\(viewModel.characters.count)")
-                            .padding(3)
-                            .background {
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.green.opacity(0.3))
-                            }
-                            .foregroundStyle(Color.green)
-                            .fontWeight(.black)
-                    }
-                    .padding(.horizontal)
-                    
-                    //TODO: Hacer que funcione el searchbar
-                    SearchBar(text: $searchText)
-                        .padding(.horizontal, 16)
-                    
-                    ScrollView(.vertical, showsIndicators: false) {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.characters, id: \.id) { character in
-                                NavigationLink {
-                                    CharacterDetailView(character: character)
-                                } label: {
-                                    HStack {
-                                        CharacterImageView(
-                                            imageURL: character.image,
-                                            size: 76,
-                                            cornerRadius: 22
-                                        )
-                                        VStack {
-                                            Text(character.name)
-                                                .foregroundStyle(.white)
-                                                .fontWeight(.black)
-                                                .frame(maxWidth: .infinity, alignment: .center)
-                                            Text(character.origin.name)
-                                                .foregroundStyle(.white)
-                                                .font(.caption)
-                                                .frame(maxWidth: .infinity, alignment: .center)
-                                        }
-                                        Spacer()
-                                        CharacterStatusView(
-                                            characterStatus: character.status,
-                                            characterSpecie: character.species,
-                                            side: .vertical
-                                        )
-                                    } //: HStack
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 10)
-                                }
-                                .buttonStyle(.plain)
-                                Divider()
-                                    .background(.gray.opacity(0.2))
-                            }
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.bottom, 16)
-                    } //ScrollView
+                SearchBar(text: $viewModel.searchText)
+                    .padding(.horizontal, 16)
+                
+                contentView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-            }// VStack
+            }
             .animatedBackground()
             .toolbarBackground(.hidden, for: .navigationBar)
             .task {
                 await viewModel.loadCharactersIfNeeded()
             }
-        } // NavigationStack
+        }
     }
+    
+    private var headerView: some View {
+        HStack {
+            Text("Characters")
+                .font(.title)
+                .fontWeight(.black)
+                .foregroundStyle(Color.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Spacer()
+            
+            Text("\(viewModel.characters.count)")
+                .padding(3)
+                .background {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.green.opacity(0.3))
+                }
+                .foregroundStyle(Color.green)
+                .fontWeight(.black)
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if viewModel.isLoading && viewModel.characters.isEmpty {
+            ProgressView()
+                .tint(.white)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if let errorMessage = viewModel.errorMessage {
+            Text(errorMessage)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if viewModel.characters.isEmpty {
+            emptyStateView
+        } else {
+            charactersListView
+        }
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 12) {
+            Text(viewModel.searchText.isEmpty ? "No characters available" : "No characters found")
+                .foregroundStyle(.white)
+                .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 24)
+    }
+    
+    private var charactersListView: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack(spacing: 12) {
+                ForEach(viewModel.characters, id: \.id) { character in
+                    NavigationLink {
+                        CharacterDetailView(character: character)
+                    } label: {
+                        HStack {
+                            CharacterImageView(
+                                imageURL: character.image,
+                                size: 76,
+                                cornerRadius: 22
+                            )
+
+                            VStack {
+                                Text(character.name)
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.black)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+
+                                Text(character.origin.name)
+                                    .foregroundStyle(.white)
+                                    .font(.caption)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            }
+
+                            Spacer()
+
+                            CharacterStatusView(
+                                characterStatus: character.status,
+                                characterSpecie: character.species,
+                                side: .vertical
+                            )
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.plain)
+
+                    Divider()
+                        .background(.gray.opacity(0.2))
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.bottom, 16)
+        }
+    }
+
 }
 
 #Preview {
